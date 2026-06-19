@@ -1,6 +1,23 @@
 import telebot
+from flask import Flask
+from threading import Thread
 
-TOKEN = "8612665593:AAHpwY_m-QBOumai8GKG7E_GkVmvViMuUM8"
+# রেন্ডারের জন্য ডামি ওয়েব সার্ভার সেটআপ
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "বট সচল আছে!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+# --- তোমার টেলিগ্রাম বটের মূল কোড ---
+TOKEN = "8612665593:AAFnnQzFvqlOax9ULL3e3-nyCNzI1PRctIk"
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
@@ -38,5 +55,8 @@ def risk_calculator(message):
 def send_strategy(message):
     bot.reply_to(message, "🧠 Auto-Cashout (1.3x/1.5x) ব্যবহার করো। টানা ৩ বার হারলে বিরতি নাও।")
 
-print("লাইটওয়েট বট চালু হয়েছে...")
-bot.infinity_polling()
+# গিটহাবে requirements.txt ফাইলে আরেকটি লাইনে Flask লিখে দিও।
+if __name__ == '__main__':
+    keep_alive() # সার্ভার চালু করা
+    print("বট সফলভাবে চালু হয়েছে...")
+    bot.infinity_polling()
